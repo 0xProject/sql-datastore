@@ -77,7 +77,7 @@ func newDS(t *testing.T) (*Datastore, func()) {
 		t.Fatal(err)
 	}
 	fmtstr := "postgres://%s:%s@%s/%s?sslmode=disable"
-	constr := fmt.Sprintf(fmtstr, "postgres", "", "127.0.0.1", "test_datastore")
+	constr := fmt.Sprintf(fmtstr, "postgres", "simple", "127.0.0.1", "datastore")
 	db, err := sql.Open("postgres", constr)
 	if err != nil {
 		t.Fatal(err)
@@ -103,8 +103,8 @@ func addTestCases(t *testing.T, d *Datastore, testcases map[string]string) {
 	}
 
 	err := d.Put(ds.NewKey("/foo"), nil)
-	if err != ds.ErrInvalidType {
-		t.Error("Expected err to be ds.ErrInvalidType")
+	if err != ErrInvalidType {
+		t.Error("Expected err to be ErrInvalidType")
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -329,8 +329,8 @@ func TestBatching(t *testing.T) {
 	}
 
 	err = b.Put(ds.NewKey("/foo"), nil)
-	if err != ds.ErrInvalidType {
-		t.Error("Expected err to be ds.ErrInvalidType")
+	if err != ErrInvalidType {
+		t.Error("Expected err to be ErrInvalidType")
 		if err != nil {
 			t.Fatal(err)
 		}

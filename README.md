@@ -7,7 +7,7 @@ that can be backed by any sql database.
 ```
 import (
 	"database/sql"
-	"github.com/whyrusleeping/sql-datastore"
+	"github.com/opaolini/go-ds-sql"
 )
 
 mydb, _ := sql.Open("yourdb", "yourdbparameters")
