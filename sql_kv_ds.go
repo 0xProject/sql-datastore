@@ -30,7 +30,7 @@ func (q queries) Delete() string {
 }
 
 func (q queries) Exists() string {
-	return `SELECT exists(SELECT 1 FROM` + q.tableName + ` WHERE key=$1)`
+	return `SELECT exists(SELECT 1 FROM ` + q.tableName + ` WHERE key=$1)`
 }
 
 func (q queries) Get() string {
