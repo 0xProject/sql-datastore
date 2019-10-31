@@ -31,11 +31,6 @@ func TestAutoBatching(t *testing.T) {
 
 	d := autobatch.NewAutoBatching(store, batchSize)
 
-	// bch, err := store.Batch()
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
-
 	var keys []datastore.Key
 	value := []byte("hello world!")
 	for i := 0; i < batchSize; i++ {
