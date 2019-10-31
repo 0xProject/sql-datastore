@@ -19,8 +19,7 @@ import (
 
 func TestAutoBatching(t *testing.T) {
 	opts := &Options{
-		Table:    "testauto",
-		Password: "simple",
+		Table: "testauto",
 	}
 	store, err := opts.CreatePostgres()
 	if err != nil {
@@ -123,8 +122,7 @@ func TestProviderManagerDatastore(t *testing.T) {
 	defer cancel()
 
 	opts := &Options{
-		Table:    "providertest",
-		Password: "simple",
+		Table: "providertest",
 	}
 	store, err := opts.CreatePostgres()
 	if err != nil {
