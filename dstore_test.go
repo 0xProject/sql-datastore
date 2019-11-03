@@ -6,15 +6,13 @@ import (
 	"fmt"
 	"testing"
 
+	cid "github.com/ipfs/go-cid"
 	"github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-datastore/autobatch"
-	"github.com/libp2p/go-libp2p-kad-dht/providers"
-
 	dssync "github.com/ipfs/go-datastore/sync"
-	"github.com/libp2p/go-libp2p-core/peer"
-
-	cid "github.com/ipfs/go-cid"
 	u "github.com/ipfs/go-ipfs-util"
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-kad-dht/providers"
 )
 
 func TestAutoBatching(t *testing.T) {
