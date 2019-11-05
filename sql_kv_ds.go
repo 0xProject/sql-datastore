@@ -21,7 +21,7 @@ type queries struct {
 	tableName string
 }
 
-func newQueries(tableName string) *queries {
+func NewQueriesForTable(tableName string) *queries {
 	return &queries{tableName}
 }
 
@@ -78,7 +78,7 @@ func (opts *Options) CreatePostgres() (*Datastore, error) {
 		return nil, err
 	}
 
-	return NewDatastore(db, newQueries(opts.Table)), nil
+	return NewDatastore(db, NewQueriesForTable(opts.Table)), nil
 }
 
 func (opts *Options) setDefaults() {
