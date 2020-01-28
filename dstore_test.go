@@ -6,15 +6,13 @@ import (
 	"fmt"
 	"testing"
 
+	cid "github.com/ipfs/go-cid"
 	"github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-datastore/autobatch"
-	"github.com/libp2p/go-libp2p-kad-dht/providers"
-
 	dssync "github.com/ipfs/go-datastore/sync"
-	"github.com/libp2p/go-libp2p-core/peer"
-
-	cid "github.com/ipfs/go-cid"
 	u "github.com/ipfs/go-ipfs-util"
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-kad-dht/providers"
 )
 
 func TestAutoBatching(t *testing.T) {
@@ -139,16 +137,16 @@ func TestProviderManagerDatastore(t *testing.T) {
 	mid := peer.ID("testing")
 	p := providers.NewProviderManager(ctx, mid, dssync.MutexWrap(store))
 	a := cid.NewCidV0(u.Hash([]byte("test")))
-	p.AddProvider(ctx, a, peer.ID("testingprovider"))
+	p.AddProvider(ctx, a.Bytes(), peer.ID("testingprovider"))
 
 	// Not cached
-	resp := p.GetProviders(ctx, a)
+	resp := p.GetProviders(ctx, a.Bytes())
 	if len(resp) != 1 {
 		t.Fatal("Could not retrieve provider.")
 	}
 
 	// Cached
-	resp = p.GetProviders(ctx, a)
+	resp = p.GetProviders(ctx, a.Bytes())
 	if len(resp) != 1 {
 		t.Fatal("Could not retrieve provider.")
 	}

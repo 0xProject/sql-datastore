@@ -251,6 +251,17 @@ func (d *Datastore) GetSize(key ds.Key) (int, error) {
 	}
 }
 
+// Sync guarantees that any Put or Delete calls under prefix that returned
+// before Sync(prefix) was called will be observed after Sync(prefix)
+// returns, even if the program crashes. If Put/Delete operations already
+// satisfy these requirements then Sync may be a no-op.
+//
+// If the prefix fails to Sync this method returns an error.
+func (*Datastore) Sync(prefix ds.Key) error {
+	// For SQL, sync is a no-op.
+	return nil
+}
+
 // QueryWithParams applies prefix, limit, and offset params in pg query
 func QueryWithParams(d *Datastore, q dsq.Query) (*sql.Rows, error) {
 	var qNew = d.queries.Query()
