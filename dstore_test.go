@@ -17,7 +17,7 @@ import (
 
 func TestAutoBatching(t *testing.T) {
 	opts := &Options{
-		Table: "testauto",
+		Table: "test_datastore",
 	}
 	store, err := opts.CreatePostgres()
 	if err != nil {
@@ -130,16 +130,16 @@ func TestProviderManagerDatastore(t *testing.T) {
 	mid := peer.ID("testing")
 	p := providers.NewProviderManager(ctx, mid, dssync.MutexWrap(store))
 	a := cid.NewCidV0(u.Hash([]byte("test")))
-	p.AddProvider(ctx, a, peer.ID("testingprovider"))
+	p.AddProvider(ctx, a.Bytes(), peer.ID("testingprovider"))
 
 	// Not cached
-	resp := p.GetProviders(ctx, a)
+	resp := p.GetProviders(ctx, a.Bytes())
 	if len(resp) != 1 {
 		t.Fatal("Could not retrieve provider.")
 	}
 
 	// Cached
-	resp = p.GetProviders(ctx, a)
+	resp = p.GetProviders(ctx, a.Bytes())
 	if len(resp) != 1 {
 		t.Fatal("Could not retrieve provider.")
 	}
