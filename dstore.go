@@ -10,6 +10,10 @@ import (
 	dsq "github.com/ipfs/go-datastore/query"
 )
 
+var (
+	ErrInvalidType = errors.New("invalid value type")
+)
+
 type Queries interface {
 	Delete() string
 	Exists() string
@@ -58,7 +62,7 @@ func (b *batch) GetTransaction() (*sql.Tx, error) {
 
 func (b *batch) Put(key ds.Key, val []byte) error {
 	if val == nil {
-		return ds.ErrInvalidType
+		return ErrInvalidType
 	}
 
 	txn, err := b.GetTransaction()
@@ -92,9 +96,13 @@ func (b *batch) Delete(key ds.Key) error {
 }
 
 func (b *batch) Commit() error {
+	// We do not return an error here, because there may be a garbage
+	// collection flushing the cache like in the case of provider manager
+	// which go-libp2p-kad-dht uses.
 	if b.txn == nil {
-		return errors.New("no transaction started, cannot commit")
+		return nil
 	}
+
 	var err = b.txn.Commit()
 	if err != nil {
 		b.txn.Rollback()
@@ -165,7 +173,7 @@ func (d *Datastore) Has(key ds.Key) (exists bool, err error) {
 
 func (d *Datastore) Put(key ds.Key, value []byte) error {
 	if value == nil {
-		return ds.ErrInvalidType
+		return ErrInvalidType
 	}
 
 	_, err := d.db.Exec(d.queries.Put(), key.String(), value)
