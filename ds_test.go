@@ -103,8 +103,8 @@ func addTestCases(t *testing.T, d *Datastore, testcases map[string]string) {
 	}
 
 	err := d.Put(ds.NewKey("/foo"), nil)
-	if err != ds.ErrInvalidType {
-		t.Error("Expected err to be ds.ErrInvalidType")
+	if err != ErrInvalidType {
+		t.Error("Expected err to be ErrInvalidType")
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -329,8 +329,8 @@ func TestBatching(t *testing.T) {
 	}
 
 	err = b.Put(ds.NewKey("/foo"), nil)
-	if err != ds.ErrInvalidType {
-		t.Error("Expected err to be ds.ErrInvalidType")
+	if err != ErrInvalidType {
+		t.Error("Expected err to be ErrInvalidType")
 		if err != nil {
 			t.Fatal(err)
 		}
