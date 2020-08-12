@@ -67,7 +67,9 @@ func (b *batch) Put(key ds.Key, val []byte) error {
 
 	txn, err := b.GetTransaction()
 	if err != nil {
-		b.txn.Rollback()
+		if b.txn != nil {
+			b.txn.Rollback()
+		}
 		return err
 	}
 
@@ -83,7 +85,10 @@ func (b *batch) Put(key ds.Key, val []byte) error {
 func (b *batch) Delete(key ds.Key) error {
 	txn, err := b.GetTransaction()
 	if err != nil {
-		b.txn.Rollback()
+		if b.txn != nil {
+			b.txn.Rollback()
+		}
+		return err
 	}
 
 	_, err = txn.Exec(b.queries.Delete(), key.String())
