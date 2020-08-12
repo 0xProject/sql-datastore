@@ -60,40 +60,62 @@ func (b *batch) GetTransaction() (*sql.Tx, error) {
 	return newTransaction, nil
 }
 
-func (b *batch) Put(key ds.Key, val []byte) error {
+func (b *batch) Put(key ds.Key, val []byte) (err error) {
+	defer func() {
+		if err != nil {
+			if b.txn != nil {
+				b.txn.Rollback()
+			}
+		}
+		if r := recover(); r != nil {
+			if b.txn != nil {
+				b.txn.Rollback()
+			}
+			// Re-panic so that callers can potentially handle it.
+			panic(r)
+		}
+	}()
+
 	if val == nil {
 		return ErrInvalidType
 	}
 
 	txn, err := b.GetTransaction()
 	if err != nil {
-		if b.txn != nil {
-			b.txn.Rollback()
-		}
 		return err
 	}
 
 	_, err = txn.Exec(b.queries.Put(), key.String(), val)
 	if err != nil {
-		b.txn.Rollback()
 		return err
 	}
 
 	return nil
 }
 
-func (b *batch) Delete(key ds.Key) error {
+func (b *batch) Delete(key ds.Key) (err error) {
+	defer func() {
+		if err != nil {
+			if b.txn != nil {
+				b.txn.Rollback()
+			}
+		}
+		if r := recover(); r != nil {
+			if b.txn != nil {
+				b.txn.Rollback()
+			}
+			// Re-panic so that callers can potentially handle it.
+			panic(r)
+		}
+	}()
+
 	txn, err := b.GetTransaction()
 	if err != nil {
-		if b.txn != nil {
-			b.txn.Rollback()
-		}
 		return err
 	}
 
 	_, err = txn.Exec(b.queries.Delete(), key.String())
 	if err != nil {
-		b.txn.Rollback()
 		return err
 	}
 
