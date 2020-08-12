@@ -60,24 +60,22 @@ func (b *batch) GetTransaction() (*sql.Tx, error) {
 	return newTransaction, nil
 }
 
-func (b *batch) rollbackTxn(errPtr *error) {
-	err := *errPtr
+func (b *batch) rollbackTxn(err error) {
+	if b.txn == nil {
+		return
+	}
 	if err != nil {
-		if b.txn != nil {
-			b.txn.Rollback()
-		}
+		b.txn.Rollback()
 	}
 	if r := recover(); r != nil {
-		if b.txn != nil {
-			b.txn.Rollback()
-		}
+		b.txn.Rollback()
 		// Re-panic so that callers can potentially handle it.
 		panic(r)
 	}
 }
 
 func (b *batch) Put(key ds.Key, val []byte) (err error) {
-	defer b.rollbackTxn(&err)
+	defer func() { b.rollbackTxn(err) }()
 
 	if val == nil {
 		return ErrInvalidType
@@ -97,7 +95,7 @@ func (b *batch) Put(key ds.Key, val []byte) (err error) {
 }
 
 func (b *batch) Delete(key ds.Key) (err error) {
-	defer b.rollbackTxn(&err)
+	defer func() { b.rollbackTxn(err) }()
 
 	txn, err := b.GetTransaction()
 	if err != nil {
